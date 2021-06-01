@@ -24,9 +24,6 @@ class Solution {
         if (in.hasNextLine()) {
             in.nextLine();
         }
-        for (int i = 0; i < player.length; i++) {
-            System.err.println(player[i]+"  "+pos[i]);
-        }
         int shift = 0;
         int counter = 0;
         int[] jcounter = new int[P];
@@ -41,22 +38,17 @@ class Solution {
             } else {
                 cacaboom++; //in jail, cacaboom != 0;
                 if (roll1==roll2) {
-                    System.err.print("-*");
                     pos[currentPlayer] = 10 + roll1 + roll2;
                     jcounter[currentPlayer] = 0;
                 } else if (jcounter[currentPlayer] == 2) {
-                    System.err.print("-");
                     pos[currentPlayer] = 10 + roll1 + roll2;
                     jcounter[currentPlayer] = 0;
                 } else {
                     jcounter[currentPlayer]++;
-                    System.err.print("["+jcounter[currentPlayer]+"]");
                 }
-
             }
             if (pos[currentPlayer] > 39) pos[currentPlayer] = pos[currentPlayer]%40;
             if (roll1 == roll2 && cacaboom==0) { //&& cacaboom -> no reroll in jail
-                System.err.print("*");
                 shift+=(P-1);
                 counter++;
                 lolilol++;
