@@ -28,7 +28,7 @@ class Solution {
         int counter = 0;
         int[] jcounter = new int[P];
         for (int i = 0; i < D; i++) {
-            int lolilol = 0; //unshift the shift if the shift was created by going out of jail
+            int lolilol = 0; //unshift the shift if the shift was created & going to jail
             int cacaboom = 0; //is not in jail
             int roll1 =in.nextInt();
             int roll2 =in.nextInt();
