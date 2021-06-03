@@ -1,0 +1,202 @@
+import java.util.*;
+import java.io.*;
+import java.math.*;
+
+
+//Minimax to implement, only get heuristiv values of nodes as of now.
+
+/**
+ * Drop chips in the columns.
+ * Connect at least 4 of your chips in any direction to win.
+ **/
+class Player {
+
+    public static int mId;
+    public static int oId;
+    public static void main(String args[]) {
+            
+        Scanner in = new Scanner(System.in);
+        int myId = in.nextInt(); // 0 or 1 (Player 0 plays first)
+        int oppId = in.nextInt(); // if your index is 0, this will be 1, and vice versa
+        mId = myId;
+        oId = oppId;
+        //System.err.println(mId);
+        // game loop
+        while (true) {
+            int turnIndex = in.nextInt(); // starts from 0; As the game progresses, first player gets [0,2,4,...] and second player gets [1,3,5,...]
+            String boardRow[] = new String[7];
+            for (int i = 0; i < 7; i++) {
+                boardRow[i] = in.next(); // one row of the board (from top to bottom)
+                //System.err.println(boardRow[i]);
+            }
+            int numValidActions = in.nextInt(); // number of unfilled columns in the board
+            int validActions[] = new int[numValidActions];
+            for (int i = 0; i < numValidActions; i++) {
+                validActions[i] = in.nextInt(); // a valid column index into which a chip can be dropped
+            }
+            int oppPreviousAction = in.nextInt(); // opponent's previous chosen column index (will be -1 for first player in the first turn)
+
+            // Write an action using System.out.println()
+            // To debug: System.err.println("Debug messages...");
+
+
+            // Output a column index to drop the chip in. Append message to show in the viewer.
+            if (turnIndex == 1 && myId == 1){
+                System.out.println("-2");
+            } else {
+                System.out.println(pick_best_move(boardRow,validActions,myId));
+            }
+            
+        }
+    
+    }//psvm
+
+
+
+ public static int score_position(String[] board, int player){
+        int score = 0;
+        //Horizontal
+        for (int i = 0; i < board.length; i++) {
+            String row_array = board[i];
+            for (int j = 0; j < row_array.length()-3; j++) {
+                String window = row_array.substring(j,j+4);
+                score += evaluate_window(window, player);
+            }
+            
+        }
+        //Vertical
+        for (int i = 0; i < 9; i++) {
+            StringBuilder col_array = new StringBuilder();
+            for (int j = 0; j < board.length; j++) {
+                col_array.append(board[j].charAt(i));  
+            } 
+            for (int j = 0; j < col_array.length()-3; j++) {
+                String window = col_array.substring(j,j+4);
+                score += evaluate_window(window, player);
+            }    
+        }
+        //positive slope diag
+        for (int i = 0; i < board.length-3; i++) {
+            for (int j = 0; j < 6; j++) {
+                String window = ""+board[i].charAt(j) + board[i+1].charAt(j+1) + board[i+2].charAt(j+2) + board[i+3].charAt(j+3);
+                //System.err.println("a:"+window);
+                score += evaluate_window(window, player);
+            }
+        }
+
+        //negative slope diag
+        for (int i = 0; i < board.length-3; i++) {
+            for (int j = 0; j < 6; j++) {
+                String window = ""+board[i+3].charAt(j) + board[i+2].charAt(j+1) + board[i+1].charAt(j+2) + board[i].charAt(j+3);
+                //System.err.println("b:"+window);
+                score += evaluate_window(window, player);
+            }
+        }
+
+    return score;
+    }
+
+    public static int evaluate_window(String window, int player){
+        int score = 0;
+        char opponent_piece = String.valueOf(oId).charAt(0);
+        if (Integer.toString(player).charAt(0) == oId){
+            opponent_piece = Integer.toString(mId).charAt(0);
+        }
+        if  (countChar(window, String.valueOf(player).charAt(0)) == 4){
+            score+=100;
+            //System.err.println("win");
+        } else if(countChar(window, Integer.toString(player).charAt(0)) == 3 && countChar(window, 'V') == 1){
+            score+=10;
+            //System.err.println("good");
+        }  else if (countChar(window, Integer.toString(player).charAt(0)) == 2 && countChar(window, 'V') == 2){
+            score+=5;
+            //System.err.println("ok");
+        }
+            //System.err.println(opponent_piece);
+        if  (countChar(window,opponent_piece) == 3 && countChar(window, 'V') == 1){
+            //System.err.println("bad");
+            score-=80;
+        }  else if  (countChar(window,opponent_piece) == 2 && countChar(window, 'V') == 2){
+            //System.err.println("bad");
+            score-=8;
+        }
+        //System.err.println(score);
+        return score;
+    }
+
+    public static int pick_best_move(String[] board,int[] validLocations, int player){
+        //System.err.println(player);
+        int best_score = -999999;
+        List<Integer> best_cols = new ArrayList<Integer>();
+        //validLocations[*validLocations.length)];
+        for (int i = 0; i < validLocations.length; i++) {
+            String[] tmp_board = Arrays.copyOf(board,board.length);
+            drop_piece(tmp_board,player,validLocations[i]);
+            int score = score_position(tmp_board, player);
+            //System.err.println(score);
+            if (score == best_score){
+                best_cols.add(validLocations[i]);
+            } else if (score > best_score){
+                best_cols.clear();
+                best_cols.add(validLocations[i]);
+                best_score = score;
+            }
+        }
+        return (best_cols.get((int)(Math.random()*best_cols.size())));
+    }
+
+    public static void drop_piece(String[] board, int player, int col){
+        int count = 0;
+        for (int i = 0; i < board.length; i++) {
+            if (board[i].charAt(col) == '.'){
+                count++;
+            }
+        }
+        String s = board[count-1];
+        char[] c = s.toCharArray();
+        c[col] = Integer.toString(player).charAt(0);
+        s = String.valueOf(c);
+        board[count-1] = s;
+        count = 0;
+
+    for (int i = 0; i < 9; i++) {
+           for (int j = 0; j < board.length; j++) {
+                if (board[j].charAt(i) == '.'){
+                    count++;
+                }
+            }
+        if (count > 0){
+            String ss = board[count-1];
+            char[] cc = ss.toCharArray();
+            cc[i] = 'V';
+            ss = String.valueOf(cc);
+            board[count-1] = ss;
+            count = 0;
+        }
+        }
+        //for (int j = 0; j < board.length; j++) {
+        //    System.err.println(board[j]);
+        //    
+        //}   
+        //System.err.println();
+
+    }
+
+
+
+
+    public static int countChar(String s, char c){
+        int count = 0;
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) == c) {
+                count++;
+            }
+        }
+    return count;
+    }
+
+
+
+
+
+}//class
