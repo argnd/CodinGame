@@ -328,10 +328,10 @@ class Player {
         //}
         }
         for (int j = 0; j < board.length; j++) {
-            System.err.println(board[j]);
+            System.err.println(board[j]); //comment this line to get only heuristic values of nodes
             
         }   
-       System.err.println();
+       System.err.println();//comment this line to get only heuristic values of nodes
 
     }
 
