@@ -1,0 +1,119 @@
+import java.util.*;
+import java.io.*;
+import java.math.*;
+
+//Binary tree insertion and traversal
+//inorder preorder postorder levelorder
+
+class Solution {
+
+    public static void main(String args[]) {
+        Scanner in = new Scanner(System.in);
+        int n = in.nextInt();
+        Node rootNode = new Node(in.nextInt());
+        for (int i = 1; i < n; i++) {
+            insertNode(new Node(in.nextInt()),rootNode);
+        }
+
+        System.out.println(preOrderTraversal(rootNode).toString().trim());
+        System.out.println(inOrderTraversal(rootNode).toString().trim());
+        System.out.println(postOrderTraversal(rootNode).toString().trim());
+        System.out.println(levelOrderTraverSal(rootNode).toString().trim());
+
+    }//psvm
+
+    public static void insertNode(Node n, Node root){
+        if(n.value <= root.value){ //next node is left or right ?
+            if (root.left == null){
+                root.left = n;
+            } else {
+                insertNode(n, root.left);
+            }
+        } else {
+            if (root.right == null){
+                root.right = n;
+            } else {
+                insertNode(n, root.right);
+            }
+        }
+    }
+
+    public static String preOrderTraversal(Node n){
+        StringBuilder sb = new StringBuilder();
+        sb.append(n.value+" ");
+        if (n.left != null) sb.append(preOrderTraversal(n.left));
+        if (n.right != null) sb.append(preOrderTraversal(n.right));
+
+        return sb.toString();
+    }
+
+
+    public static String inOrderTraversal(Node n){
+        StringBuilder sb = new StringBuilder();
+        if (n.left != null) sb.append(inOrderTraversal(n.left));
+        sb.append(n.value+" ");
+        if (n.right != null) sb.append(inOrderTraversal(n.right));
+
+        return sb.toString();
+    }
+
+
+    public static String postOrderTraversal(Node n){
+        StringBuilder sb = new StringBuilder();
+        if (n.left != null) sb.append(postOrderTraversal(n.left));
+        if (n.right != null) sb.append(postOrderTraversal(n.right));
+        sb.append(n.value+" ");
+
+        return sb.toString();
+    }
+
+    
+    public static String levelOrderTraverSal(Node n) {
+        StringBuilder sb = new StringBuilder();
+
+        ArrayList<Queue<Node>> queues = new ArrayList<Queue<Node>>();
+        
+        queues.add(new ArrayDeque<Node>());
+        queues.add(new ArrayDeque<Node>());
+
+        Queue<Node> current_queue = queues.get(0);
+        Queue<Node> next_queue = queues.get(1);
+
+        current_queue.add(n);
+        int level_number = 0;
+
+        while (!current_queue.isEmpty()) {
+        Node temp = current_queue.poll();
+        sb.append(temp.value + " ");
+
+        if (temp.left != null) {
+            next_queue.add(temp.left);
+        }
+
+        if (temp.right != null) {
+            next_queue.add(temp.right);
+        }
+
+        if (current_queue.isEmpty()) {
+            //System.out.println();
+            ++level_number;
+            current_queue = queues.get(level_number % 2);
+            next_queue = queues.get((level_number + 1) % 2);
+        }
+        }
+        //System.out.println();
+        return sb.toString();
+    }
+
+}//main
+
+
+class Node {
+    public int value;
+    public Node left = null;
+    public Node right = null;
+
+    public Node(int v){
+        this.value = v;
+    }
+}//Class node
