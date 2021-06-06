@@ -4,6 +4,7 @@ import java.math.*;
 
 //Binary tree insertion and traversal
 //inorder preorder postorder levelorder
+//invert
 
 //https://www.codingame.com/training/medium/binary-search-tree-traversal
 
@@ -106,6 +107,21 @@ class Solution {
         //System.out.println();
         return sb.toString();
     }
+    
+    public static Node invert(Node rootNode){
+    
+		if (node == null) return node; //exit
+
+		Node left = invert(node.left); 
+		Node right = invert(node.right); 
+
+		rootNode.left = right; 
+		rootNode.right = left; 
+
+		return node; 
+    }
+    
+    
 
 }//main
 
