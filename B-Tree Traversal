@@ -108,17 +108,16 @@ class Solution {
         return sb.toString();
     }
     
-    public static Node invert(Node rootNode){
-    
-		if (node == null) return node; //exit
+    public static Node invert(Node n){
+	if (node == null) return null; //exit
 
-		Node left = invert(node.left); 
-		Node right = invert(node.right); 
+	Node left = invert(node.left); 
+	Node right = invert(node.right); 
 
-		rootNode.left = right; 
-		rootNode.right = left; 
+	n.left = right; 
+	n.right = left; 
 
-		return node; 
+	return node; 
     }
     
     
