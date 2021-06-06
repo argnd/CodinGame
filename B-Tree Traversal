@@ -24,7 +24,7 @@ class Solution {
         System.out.println(levelOrderTraverSal(rootNode).trim());
 
         invert(rootNode);
-        System.out.println(preOrderTraversal(rootNode).trim());
+        System.err.println(preOrderTraversal(rootNode).trim());
 
     }//psvm
 
@@ -77,37 +77,14 @@ class Solution {
     public static String levelOrderTraverSal(Node n) {
         StringBuilder sb = new StringBuilder();
 
-        ArrayList<Queue<Node>> queues = new ArrayList<Queue<Node>>();
-        
-        queues.add(new ArrayDeque<Node>());
-        queues.add(new ArrayDeque<Node>());
-
-        Queue<Node> current_queue = queues.get(0);
-        Queue<Node> next_queue = queues.get(1);
-
-        current_queue.add(n);
-        int level_number = 0;
-
-        while (!current_queue.isEmpty()) {
-        Node temp = current_queue.poll();
-        sb.append(temp.value + " ");
-
-        if (temp.left != null) {
-            next_queue.add(temp.left);
-        }
-
-        if (temp.right != null) {
-            next_queue.add(temp.right);
-        }
-
-        if (current_queue.isEmpty()) {
-            //System.out.println();
-            ++level_number;
-            current_queue = queues.get(level_number % 2);
-            next_queue = queues.get((level_number + 1) % 2);
-        }
-        }
-        //System.out.println();
+        Queue<Node> queue = new ArrayDeque<Node>();
+        queue.add(n);
+        do{
+            Node tmp = queue.poll();
+            sb.append(tmp.value+" ");
+            if (tmp.left != null) queue.add(tmp.left);
+            if (tmp.right != null) queue.add(tmp.right);
+        } while (!(queue.size() == 0));
         return sb.toString();
     }
     
