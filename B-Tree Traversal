@@ -16,11 +16,11 @@ class Solution {
         for (int i = 1; i < n; i++) {
             insertNode(new Node(in.nextInt()),rootNode);
         }
-
-        System.out.println(preOrderTraversal(rootNode).toString().trim());
-        System.out.println(inOrderTraversal(rootNode).toString().trim());
-        System.out.println(postOrderTraversal(rootNode).toString().trim());
-        System.out.println(levelOrderTraverSal(rootNode).toString().trim());
+        
+        System.out.println(preOrderTraversal(rootNode).trim());
+        System.out.println(inOrderTraversal(rootNode).trim());
+        System.out.println(postOrderTraversal(rootNode).trim());
+        System.out.println(levelOrderTraverSal(rootNode).trim());
 
     }//psvm
 
